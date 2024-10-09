@@ -6,6 +6,7 @@
 
   export const calculatorSchema = z.object({
     useMetric: z.boolean().default(false),
+    isFemale: z.boolean().default(true),
     age: z.string().refine(isNumber).refine(isGreaterThanZero),
     height: z.string().refine(isNumber).refine(isGreaterThanZero),
     weight: z.string().refine(isNumber).refine(isGreaterThanZero),
@@ -26,6 +27,8 @@
   import { superForm } from "sveltekit-superforms/client";
   import Slider from "./ui/slider/slider.svelte";
   import Switch from "./ui/switch/switch.svelte";
+  import { Control } from "formsnap";
+  import Toggle from "./ui/toggle/toggle.svelte";
 
   export let data: SuperValidated<CalculatorSchema>;
   export let onSubmit: OnSubmit;
@@ -47,6 +50,22 @@
 </script>
 
 <form method="POST" use:enhance class="space-y-4">
+  <Form.Field {form} name="isFemale">
+    <Form.Control let:attrs>
+      <Form.Label>{c("isFemale").label}</Form.Label>
+      <div class="flex items-center space-x-2">
+        {#each c("isFemale").options as option}
+          <Toggle
+            {...attrs}
+            class="flex-1"
+            pressed={$formData.isFemale === option.value}
+            on:click={() => ($formData.isFemale = option.value)}
+            >{option.label}</Toggle
+          >
+        {/each}
+      </div>
+    </Form.Control>
+  </Form.Field>
   <Form.Field {form} name="age">
     <Form.Control let:attrs>
       <div class="flex items-center space-x-2">

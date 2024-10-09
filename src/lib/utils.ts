@@ -64,6 +64,7 @@ export const flyAndScale = (
 
 export type MSJArgs = {
   isMetric: boolean;
+  isFemale: boolean;
   age: number;
   height: number;
   weight: number;
@@ -79,6 +80,7 @@ export type CalorieBreakdown = {
 
 export const mifflinStJeor = ({
   isMetric,
+  isFemale,
   age,
   height,
   weight,
@@ -92,7 +94,14 @@ export const mifflinStJeor = ({
     metricHeight = height * 2.54;
   }
 
-  const bmr = 10 * metricWeight + 6.25 * metricHeight - 5 * age;
+  let bmr = 10 * metricWeight + 6.25 * metricHeight - 5 * age;
+
+  if (isFemale) {
+    bmr -= 161;
+  } else {
+    bmr += 5;
+  }
+
   return bmr * activityLevel;
 };
 

@@ -20,6 +20,7 @@
   const onSubmit = async (form: CalculatorSchema) => {
     result = calorieBreakdown({
       isMetric: form.useMetric,
+      isFemale: form.isFemale,
       age: Number(form.age),
       weight: Number(form.weight),
       height: Number(form.height),
