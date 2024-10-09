@@ -53,10 +53,11 @@
   <Form.Field {form} name="isFemale">
     <Form.Control let:attrs>
       <Form.Label>{c("isFemale").label}</Form.Label>
-      <div class="flex items-center space-x-2">
+      <div class="flex items-center space-x-2 w-[calc(100%-60px)]">
         {#each c("isFemale").options as option}
           <Toggle
             {...attrs}
+            variant="outline"
             class="flex-1"
             pressed={$formData.isFemale === option.value}
             on:click={() => ($formData.isFemale = option.value)}
