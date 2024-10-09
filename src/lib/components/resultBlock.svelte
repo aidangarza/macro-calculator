@@ -17,12 +17,16 @@
     .sort((a, b) => a.order - b.order);
 </script>
 
-<dl class="flex flex-col space-y-2">
+<dl class="flex flex-col space-y-2 w-full">
   {#each stats as { key, label, unit }, i}
-    <div class="flex space-x-2">
-      <dt>{label}:</dt>
-      <dd>
-        {num(result[key])} <span class="opacity-60">{unit}</span>
+    <div class="flex space-x-2 overflow-hidden">
+      <dt class="flex-1 whitespace-nowrap overflow-hidden">
+        {label}
+        <span class="opacity-60">({unit})</span
+        >...............................................
+      </dt>
+      <dd class="flex-none">
+        <b>{num(result[key])}</b>
       </dd>
     </div>
   {/each}
