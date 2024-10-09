@@ -1,76 +1,49 @@
 <script lang="ts" context="module">
   import { z } from "zod";
 
-  const ACTIVITY_LEVEL = [
-    { label: "sedentary", description: "little to no exercise", value: 1.2 },
-    {
-      label: "light",
-      description: "exercise 1-3 times per week",
-      value: 1.375,
-    },
-    {
-      label: "moderate",
-      description: "exercise 4-5 times per week",
-      value: 1.55,
-    },
-    {
-      label: "active",
-      description: "daily exercise or intense exercise 3-4 times per week",
-      value: 1.725,
-    },
-    {
-      label: "very active",
-      description: "intense daily exercise",
-      value: 1.9,
-    },
-  ];
-
   const isNumber = (v: string) => !isNaN(Number(v)) && v?.length > 0;
   const isGreaterThanZero = (v: string) => Number(v) > 0;
 
   export const calculatorSchema = z.object({
     useMetric: z.boolean().default(false),
-    age: z.string().refine(isNumber).refine(isGreaterThanZero).default("35"),
-    height: z.string().refine(isNumber).refine(isGreaterThanZero).default("73"),
-    weight: z
-      .string()
-      .refine(isNumber)
-      .refine(isGreaterThanZero)
-      .default("155"),
+    age: z.string().refine(isNumber).refine(isGreaterThanZero),
+    height: z.string().refine(isNumber).refine(isGreaterThanZero),
+    weight: z.string().refine(isNumber).refine(isGreaterThanZero),
     activityLevel: z.array(z.number().min(0).max(4)).default([2]),
   });
 
-  export type CalculatorSchema = typeof calculatorSchema;
+  export type CalculatorSchema = z.infer<typeof calculatorSchema>;
+  export type OnSubmit = (form: CalculatorSchema) => void;
 </script>
 
 <script lang="ts">
-  import {
-    type Infer,
-    type SuperValidated,
-    superForm,
-  } from "sveltekit-superforms";
-  import { zodClient } from "sveltekit-superforms/adapters";
+  import Button from "$lib/components/ui/button/button.svelte";
   import * as Form from "$lib/components/ui/form";
   import Input from "$lib/components/ui/input/input.svelte";
-  import Button from "$lib/components/ui/button/button.svelte";
-  import Switch from "./ui/switch/switch.svelte";
+  import { getActivityLevel } from "$lib/utils";
+  import type { SuperValidated } from "sveltekit-superforms";
+  import { zodClient } from "sveltekit-superforms/adapters";
+  import { superForm } from "sveltekit-superforms/client";
   import Slider from "./ui/slider/slider.svelte";
+  import Switch from "./ui/switch/switch.svelte";
 
-  export let data: SuperValidated<Infer<CalculatorSchema>>;
-  export let onSubmit;
+  export let data: SuperValidated<CalculatorSchema>;
+  export let onSubmit: OnSubmit;
 
   const form = superForm(data, {
     SPA: true,
     validators: zodClient(calculatorSchema),
-    onUpdate({ form }) {
-      if (form.valid) {
-        onSubmit(form.data);
+    onUpdate({ form: updatedForm }) {
+      if (updatedForm.valid) {
+        onSubmit(updatedForm.data);
+      } else {
+        form.errors.set(updatedForm.errors);
       }
     },
     resetForm: false,
   });
 
-  const { form: formData, enhance } = form;
+  const { form: formData, errors, enhance } = form;
 
   const labels = {
     age: "Age",
@@ -132,9 +105,10 @@
   <Form.Field {form} name="activityLevel">
     <Form.Control let:attrs>
       <Form.Label
-        >Your activity level: {ACTIVITY_LEVEL[$formData.activityLevel[0]].label}
+        >Your activity level: {getActivityLevel($formData.activityLevel[0])
+          .label}<br />
         <span class="opacity-60 whitespace-nowrap"
-          >({ACTIVITY_LEVEL[$formData.activityLevel[0]].description})</span
+          >({getActivityLevel($formData.activityLevel[0]).description})</span
         ></Form.Label
       >
       <Slider

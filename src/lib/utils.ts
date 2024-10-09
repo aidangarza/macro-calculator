@@ -107,3 +107,31 @@ export const calorieBreakdown = (args: MSJArgs): CalorieBreakdown => {
 export const num = (number: number) => {
   return new Intl.NumberFormat().format(number);
 };
+
+const ACTIVITY_LEVEL = [
+  { label: "sedentary", description: "little to no exercise", value: 1.2 },
+  {
+    label: "light",
+    description: "exercise 1-3 times per week",
+    value: 1.375,
+  },
+  {
+    label: "moderate",
+    description: "exercise 4-5 times per week",
+    value: 1.55,
+  },
+  {
+    label: "active",
+    description: "exercise daily or intensely 3-4 times per week",
+    value: 1.725,
+  },
+  {
+    label: "very active",
+    description: "intense daily exercise",
+    value: 1.9,
+  },
+];
+
+export const getActivityLevel = (level: number) => {
+  return ACTIVITY_LEVEL[level];
+};

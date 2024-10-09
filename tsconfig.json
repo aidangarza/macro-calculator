@@ -5,6 +5,8 @@
     "paths": {
       "$lib": ["./src/lib"],
       "$lib/*": ["./src/lib/*"],
+      "$app": ["src/sveltekit/app"],
+      "$app/*": ["src/sveltekit/app/*"],
     },
     "target": "ESNext",
     "useDefineForClassFields": true,
