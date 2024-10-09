@@ -8,21 +8,21 @@
     .map((key) => {
       const R = r(key);
       return {
+        key,
         label: R.label,
         unit: R.unit,
         order: R.order,
-        value: result[key],
       };
     })
     .sort((a, b) => a.order - b.order);
 </script>
 
 <dl class="flex flex-col space-y-2">
-  {#each stats as { label, value, unit }, i}
+  {#each stats as { key, label, unit }, i}
     <div class="flex space-x-2">
       <dt>{label}:</dt>
       <dd>
-        {num(value)} <span class="opacity-60">{unit}</span>
+        {num(result[key])} <span class="opacity-60">{unit}</span>
       </dd>
     </div>
   {/each}
