@@ -1,32 +1,29 @@
 <script lang="ts">
-  import { num, type CalorieBreakdown } from "$lib/utils";
+  import { r, num, type CalorieBreakdown } from "$lib/utils";
 
   export let result: CalorieBreakdown;
+
+  const keys = Object.keys(result) as Array<keyof CalorieBreakdown>;
+  const stats = keys
+    .map((key) => {
+      const R = r(key);
+      return {
+        label: R.label,
+        unit: R.unit,
+        order: R.order,
+        value: result[key],
+      };
+    })
+    .sort((a, b) => a.order - b.order);
 </script>
 
 <dl class="flex flex-col space-y-2">
-  <div class="flex space-x-2">
-    <dt>Calories:</dt>
-    <dd>
-      {num(result.calories)} <span class="opacity-60">per day</span>
-    </dd>
-  </div>
-  <div class="flex space-x-2">
-    <dt>Protein:</dt>
-    <dd>
-      {num(result.protein)} <span class="opacity-60">grams per day</span>
-    </dd>
-  </div>
-  <div class="flex space-x-2">
-    <dt>Carbs:</dt>
-    <dd>
-      {num(result.carbs)} <span class="opacity-60">grams per day</span>
-    </dd>
-  </div>
-  <div class="flex space-x-2">
-    <dt>Fat:</dt>
-    <dd>
-      {num(result.fat)} <span class="opacity-60">grams per day</span>
-    </dd>
-  </div>
+  {#each stats as { label, value, unit }, i}
+    <div class="flex space-x-2">
+      <dt>{label}:</dt>
+      <dd>
+        {num(value)} <span class="opacity-60">{unit}</span>
+      </dd>
+    </div>
+  {/each}
 </dl>

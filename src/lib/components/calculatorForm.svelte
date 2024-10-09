@@ -20,7 +20,7 @@
   import Button from "$lib/components/ui/button/button.svelte";
   import * as Form from "$lib/components/ui/form";
   import Input from "$lib/components/ui/input/input.svelte";
-  import { getActivityLevel } from "$lib/utils";
+  import { al, c } from "$lib/utils";
   import type { SuperValidated } from "sveltekit-superforms";
   import { zodClient } from "sveltekit-superforms/adapters";
   import { superForm } from "sveltekit-superforms/client";
@@ -44,18 +44,6 @@
   });
 
   const { form: formData, errors, enhance } = form;
-
-  const labels = {
-    age: "Age",
-    height: "Height",
-    weight: "Weight",
-    useMetric: "Use metric",
-  };
-
-  const units = {
-    US: { height: "inches", weight: "lbs" },
-    metric: { height: "cm", weight: "kg" },
-  };
 </script>
 
 <form method="POST" use:enhance class="space-y-4">
@@ -65,10 +53,10 @@
         <Input
           {...attrs}
           bind:value={$formData.age}
-          placeholder="Your age"
+          placeholder={c("age").placeholder}
           type="number"
         />
-        <span class="w-16">years</span>
+        <span class="w-16">{c("age").unit}</span>
       </div>
     </Form.Control>
   </Form.Field>
@@ -78,11 +66,13 @@
         <Input
           {...attrs}
           bind:value={$formData.height}
-          placeholder="Your height"
+          placeholder={c("height").placeholder}
           type="number"
         />
         <span class="w-16"
-          >{units[$formData.useMetric ? "metric" : "US"].height}</span
+          >{c("height").units[
+            $formData.useMetric ? "metric" : "imperial"
+          ]}</span
         >
       </div>
     </Form.Control>
@@ -93,11 +83,13 @@
         <Input
           {...attrs}
           bind:value={$formData.weight}
-          placeholder="Your weight"
+          placeholder={c("weight").placeholder}
           type="number"
         />
         <span class="w-16"
-          >{units[$formData.useMetric ? "metric" : "US"].weight}</span
+          >{c("weight").units[
+            $formData.useMetric ? "metric" : "imperial"
+          ]}</span
         >
       </div>
     </Form.Control>
@@ -105,10 +97,10 @@
   <Form.Field {form} name="activityLevel">
     <Form.Control let:attrs>
       <Form.Label
-        >Your activity level: {getActivityLevel($formData.activityLevel[0])
-          .label}<br />
+        >{c("activityLevel").label}
+        {al($formData.activityLevel).label}<br />
         <span class="opacity-60 whitespace-nowrap"
-          >({getActivityLevel($formData.activityLevel[0]).description})</span
+          >({al($formData.activityLevel).description})</span
         ></Form.Label
       >
       <Slider
@@ -121,11 +113,11 @@
     </Form.Control>
   </Form.Field>
   <div class="flex justify-between items-center pt-3">
-    <Button type="submit">Submit</Button>
+    <Button type="submit">{c("button").label}</Button>
     <Form.Field {form} name="useMetric">
       <Form.Control let:attrs>
         <div class="flex items-center space-x-2">
-          <Form.Label>Use metric</Form.Label>
+          <Form.Label>{c("useMetric").label}</Form.Label>
           <Switch {...attrs} bind:checked={$formData.useMetric} />
         </div>
       </Form.Control>

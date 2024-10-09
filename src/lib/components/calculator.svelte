@@ -7,11 +7,8 @@
   import ResultBlock from "$lib/components/resultBlock.svelte";
   import * as Card from "$lib/components/ui/card";
   import Separator from "$lib/components/ui/separator/separator.svelte";
-  import {
-    calorieBreakdown,
-    getActivityLevel,
-    type CalorieBreakdown,
-  } from "$lib/utils.js";
+  import { content } from "$lib/content";
+  import { al, calorieBreakdown, type CalorieBreakdown } from "$lib/utils";
   import { onMount } from "svelte";
   import { zod } from "sveltekit-superforms/adapters";
   import type { SuperValidated } from "sveltekit-superforms/client";
@@ -26,7 +23,7 @@
       age: Number(form.age),
       weight: Number(form.weight),
       height: Number(form.height),
-      activityLevel: getActivityLevel(form.activityLevel[0]).value,
+      activityLevel: al(form.activityLevel).value,
     });
   };
 
@@ -41,7 +38,7 @@
 {#if data}
   <Card.Card class="w-full max-w-sm">
     <Card.Header>
-      <Card.Title>Macro Calculator</Card.Title>
+      <Card.Title>{content.title}</Card.Title>
     </Card.Header>
     <Card.CardContent>
       <Calculator {data} {onSubmit} />

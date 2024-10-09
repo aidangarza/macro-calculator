@@ -1,7 +1,8 @@
 import { type ClassValue, clsx } from "clsx";
-import { twMerge } from "tailwind-merge";
 import { cubicOut } from "svelte/easing";
 import type { TransitionConfig } from "svelte/transition";
+import { twMerge } from "tailwind-merge";
+import { content } from "$lib/content";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -108,30 +109,21 @@ export const num = (number: number) => {
   return new Intl.NumberFormat().format(number);
 };
 
-const ACTIVITY_LEVEL = [
-  { label: "sedentary", description: "little to no exercise", value: 1.2 },
-  {
-    label: "light",
-    description: "exercise 1-3 times per week",
-    value: 1.375,
-  },
-  {
-    label: "moderate",
-    description: "exercise 4-5 times per week",
-    value: 1.55,
-  },
-  {
-    label: "active",
-    description: "exercise daily or intensely 3-4 times per week",
-    value: 1.725,
-  },
-  {
-    label: "very active",
-    description: "intense daily exercise",
-    value: 1.9,
-  },
-];
+// Form content
+export function c<K extends keyof (typeof content)["form"]>(
+  k: K
+): (typeof content)["form"][K] {
+  return content.form[k];
+}
 
-export const getActivityLevel = (level: number) => {
-  return ACTIVITY_LEVEL[level];
-};
+// Activity level option content
+export function al([n]: number[]) {
+  return c("activityLevel").options[n];
+}
+
+// Results content
+export function r<K extends keyof (typeof content)["results"]>(
+  k: K
+): (typeof content)["results"][K] {
+  return content.results[k];
+}
