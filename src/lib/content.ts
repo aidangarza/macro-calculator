@@ -28,7 +28,8 @@ const defaultContent = {
       },
     },
     activityLevel: {
-      label: "Your activity Level: ",
+      label: "Your activity level: ",
+      defaultIndex: 2,
       options: [
         {
           label: "sedentary",
@@ -54,6 +55,37 @@ const defaultContent = {
           label: "very active",
           description: "intense daily exercise",
           value: 1.9,
+        },
+      ],
+    },
+    goal: {
+      label: "Your goal:",
+      defaultIndex: 2,
+      options: [
+        {
+          label: "drop weight",
+          description: "lose about 1lb per week",
+          value: -500,
+        },
+        {
+          label: "drop weight",
+          description: "lose about 0.5lb per week",
+          value: -250,
+        },
+        {
+          label: "recomposition",
+          description: "maintain current weight",
+          value: 0,
+        },
+        {
+          label: "bulk up",
+          description: "gain about 0.5lb per week",
+          value: 250,
+        },
+        {
+          label: "bulk up",
+          description: "gain about 1lb per week",
+          value: 500,
         },
       ],
     },

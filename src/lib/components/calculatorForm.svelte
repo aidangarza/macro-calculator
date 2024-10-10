@@ -1,6 +1,8 @@
 <script lang="ts" context="module">
   import { z } from "zod";
 
+  const params = getOptionParameters();
+
   const isNumber = (v: string) => !isNaN(Number(v)) && v?.length > 0;
   const isNumberError = { message: "Please enter a valid number" };
   const isGreaterThanZero = (v: string) => Number(v) > 0;
@@ -33,7 +35,12 @@
       .string()
       .refine(isNumber, isNumberError)
       .refine(isGreaterThanZero, isGreaterThanZeroError),
-    activityLevel: z.array(z.number().min(0).max(4)).default([2]),
+    activityLevel: z
+      .array(z.number().min(0).max(params.activityLevel.max))
+      .default([params.activityLevel.default]),
+    goal: z
+      .array(z.number().min(0).max(params.goal.max))
+      .default([params.goal.default]),
   });
 
   export const getHeight = (data: CalculatorSchema) =>
@@ -49,13 +56,13 @@
   import Button from "$lib/components/ui/button/button.svelte";
   import * as Form from "$lib/components/ui/form";
   import Input from "$lib/components/ui/input/input.svelte";
-  import { al, c } from "$lib/utils";
+  import Slider from "$lib/components/ui/slider/slider.svelte";
+  import Switch from "$lib/components/ui/switch/switch.svelte";
+  import * as ToggleGroup from "$lib/components/ui/toggle-group";
+  import { al, c, g, getOptionParameters } from "$lib/utils";
   import type { SuperValidated } from "sveltekit-superforms";
   import { zodClient } from "sveltekit-superforms/adapters";
   import { superForm } from "sveltekit-superforms/client";
-  import Slider from "./ui/slider/slider.svelte";
-  import Switch from "./ui/switch/switch.svelte";
-  import * as ToggleGroup from "./ui/toggle-group";
 
   export let data: SuperValidated<CalculatorSchema>;
   export let onSubmit: OnSubmit;
@@ -64,7 +71,6 @@
     SPA: true,
     validators: zodClient(calculatorSchema),
     onUpdate({ form: updatedForm }) {
-      console.log("form", updatedForm);
       if (updatedForm.valid) {
         onSubmit(updatedForm.data);
       } else {
@@ -76,9 +82,7 @@
 
   const { form: formData, enhance } = form;
 
-  function toggleSex(v: boolean) {
-    formData.update((d) => ({ ...d, isFemale: v }));
-  }
+  const params = getOptionParameters();
 </script>
 
 <form method="POST" use:enhance class="space-y-4">
@@ -186,8 +190,27 @@
         {...attrs}
         bind:value={$formData.activityLevel}
         min={0}
-        max={4}
+        max={params.activityLevel.max}
         step={1}
+      />
+    </Form.Control>
+  </Form.Field>
+  <Form.Field {form} name="goal">
+    <Form.Control let:attrs>
+      <Form.Label
+        >{c("goal").label}
+        {g($formData.goal).label}<br />
+        <span class="opacity-60 whitespace-nowrap"
+          >({g($formData.goal).description})</span
+        ></Form.Label
+      >
+      <Slider
+        {...attrs}
+        bind:value={$formData.goal}
+        min={0}
+        max={params.goal.max}
+        step={1}
+        hideRange={true}
       />
     </Form.Control>
   </Form.Field>

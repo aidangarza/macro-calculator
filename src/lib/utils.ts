@@ -1,8 +1,8 @@
+import { content } from "$lib/content";
 import { type ClassValue, clsx } from "clsx";
 import { cubicOut } from "svelte/easing";
 import type { TransitionConfig } from "svelte/transition";
 import { twMerge } from "tailwind-merge";
-import { content } from "$lib/content";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -69,6 +69,7 @@ export type MSJArgs = {
   height: number;
   weight: number;
   activityLevel: number;
+  delta: number;
 };
 
 export type CalorieBreakdown = {
@@ -85,6 +86,7 @@ export const mifflinStJeor = ({
   height,
   weight,
   activityLevel,
+  delta,
 }: MSJArgs) => {
   let metricWeight = weight;
   let metricHeight = height;
@@ -102,7 +104,7 @@ export const mifflinStJeor = ({
     bmr += 5;
   }
 
-  return bmr * activityLevel;
+  return bmr * activityLevel + delta;
 };
 
 export const calorieBreakdown = (args: MSJArgs): CalorieBreakdown => {
@@ -118,6 +120,20 @@ export const num = (number: number) => {
   return new Intl.NumberFormat().format(number);
 };
 
+// Option counts
+export function getOptionParameters() {
+  return {
+    activityLevel: {
+      max: content.form.activityLevel.options.length - 1,
+      default: content.form.activityLevel.defaultIndex,
+    },
+    goal: {
+      max: content.form.goal.options.length - 1,
+      default: content.form.goal.defaultIndex,
+    },
+  };
+}
+
 // Form content
 export function c<K extends keyof (typeof content)["form"]>(
   k: K
@@ -128,6 +144,11 @@ export function c<K extends keyof (typeof content)["form"]>(
 // Activity level option content
 export function al([n]: number[]) {
   return c("activityLevel").options[n];
+}
+
+// Goal option content
+export function g([n]: number[]) {
+  return c("goal").options[n];
 }
 
 // Results content

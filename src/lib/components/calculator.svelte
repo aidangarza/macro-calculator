@@ -9,7 +9,7 @@
   import * as Card from "$lib/components/ui/card";
   import Separator from "$lib/components/ui/separator/separator.svelte";
   import { content } from "$lib/content";
-  import { al, calorieBreakdown, type CalorieBreakdown } from "$lib/utils";
+  import { al, calorieBreakdown, g, type CalorieBreakdown } from "$lib/utils";
   import { onMount } from "svelte";
   import { zod } from "sveltekit-superforms/adapters";
   import type { SuperValidated } from "sveltekit-superforms/client";
@@ -26,6 +26,7 @@
       weight: Number(form.weight),
       height: getHeight(form),
       activityLevel: al(form.activityLevel).value,
+      delta: g(form.goal).value,
     });
   };
 
