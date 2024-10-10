@@ -14,10 +14,6 @@
   export let value: $$Props["value"];
 
   const ctx = getToggleGroupCtx();
-
-  $: hasError = $$restProps["data-fs-error"];
-
-  console.log(hasError);
 </script>
 
 <ToggleGroupPrimitive.Item
@@ -26,7 +22,6 @@
       variant: ctx.variant || variant,
       size: ctx.size || size,
     }),
-    $hasError && "ring-2 ring-offset-2 ring-destructive",
     className
   )}
   {value}

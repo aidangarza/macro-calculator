@@ -87,23 +87,14 @@
       <Form.Label>{c("sex").label}</Form.Label>
       <ToggleGroup.Root
         {...attrs}
+        variant="outline"
         class="flex items-center space-x-2 w-[calc(100%-72px)]"
         bind:value={$formData.sex}
       >
-        <ToggleGroup.Item
-          value="female"
-          class="flex-1"
-          variant="outline"
-          data-fs-error={attrs["data-fs-error"]}
-          aria-invalid={attrs["aria-invalid"]}
+        <ToggleGroup.Item value="female" class="flex-1"
           >{c("sex").options.female.label}</ToggleGroup.Item
         >
-        <ToggleGroup.Item
-          value="male"
-          class="flex-1"
-          variant="outline"
-          data-fs-error={attrs["data-fs-error"]}
-          aria-invalid={attrs["aria-invalid"]}
+        <ToggleGroup.Item value="male" class="flex-1"
           >{c("sex").options.male.label}</ToggleGroup.Item
         >
       </ToggleGroup.Root>
