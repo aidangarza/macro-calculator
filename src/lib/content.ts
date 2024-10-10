@@ -18,8 +18,9 @@ const defaultContent = {
     height: {
       placeholder: "Your height",
       units: {
-        metric: "cm",
-        imperial: "inches",
+        cm: "cm",
+        ft: "ft",
+        in: "in",
       },
     },
     weight: {

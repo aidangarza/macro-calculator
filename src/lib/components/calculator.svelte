@@ -2,6 +2,7 @@
   import {
     default as Calculator,
     calculatorSchema,
+    getHeight,
     type CalculatorSchema,
   } from "$lib/components/calculatorForm.svelte";
   import ResultBlock from "$lib/components/resultBlock.svelte";
@@ -23,7 +24,7 @@
       isFemale: form.isFemale,
       age: Number(form.age),
       weight: Number(form.weight),
-      height: Number(form.height),
+      height: getHeight(form),
       activityLevel: al(form.activityLevel).value,
     });
   };
