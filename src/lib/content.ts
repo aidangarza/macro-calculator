@@ -1,4 +1,5 @@
 const defaultContent = {
+  version: "1.0.0",
   title: "Macro Calculator",
   form: {
     sex: {
@@ -63,12 +64,12 @@ const defaultContent = {
       defaultIndex: 2,
       options: [
         {
-          label: "drop weight",
+          label: "slim down",
           description: "lose about 1lb per week",
           value: -500,
         },
         {
-          label: "drop weight",
+          label: "slim down",
           description: "lose about 0.5lb per week",
           value: -250,
         },
@@ -157,6 +158,9 @@ function getContent() {
 
   // If there's no content, or it's not an object, return the default content
   if (!inputContent || typeof inputContent !== "object") {
+    // Save the content to the window object for future reference
+    window.__macroCalculatorContent = defaultContent;
+
     return defaultContent;
   }
 
