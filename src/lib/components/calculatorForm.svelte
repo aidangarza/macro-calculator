@@ -12,50 +12,34 @@
     message: "Please enter a number less than 12",
   };
 
-  export const calculatorSchema = z
-    .object({
-      useMetric: z.boolean().default(false),
-      isFemale: z.boolean().default(true),
-      age: z
-        .string()
-        .refine(isNumber, isNumberError)
-        .refine(isGreaterThanZero, isGreaterThanZeroError),
-      heightInCm: z
-        .string()
-        .refine(isNumber, isNumberError)
-        .refine(isGreaterThanZero, isGreaterThanZeroError)
-        .optional(),
-      heightInFeet: z
-        .string()
-        .refine(isNumber, isNumberError)
-        .refine(isGreaterThanZero, isGreaterThanZeroError)
-        .optional(),
-      heightInInches: z
-        .string()
-        .refine(isNumber, isNumberError)
-        .refine(isGreaterThanZero, isGreaterThanZeroError)
-        .refine(isLessThanTwelve, isLessThanTwelveError)
-        .optional(),
-      weight: z
-        .string()
-        .refine(isNumber, isNumberError)
-        .refine(isGreaterThanZero, isGreaterThanZeroError),
-      activityLevel: z.array(z.number().min(0).max(4)).default([2]),
-    })
-    .refine(
-      (data) =>
-        data.useMetric
-          ? data.heightInCm !== undefined
-          : data.heightInFeet !== undefined,
-      {
-        message: "Please enter a valid height",
-      }
-    );
+  export const calculatorSchema = z.object({
+    useMetric: z.boolean().default(false),
+    sex: z.enum(["male", "female"]).default("female"),
+    age: z
+      .string()
+      .refine(isNumber, isNumberError)
+      .refine(isGreaterThanZero, isGreaterThanZeroError),
+    height: z
+      .string()
+      .refine(isNumber, isNumberError)
+      .refine(isGreaterThanZero, isGreaterThanZeroError),
+    heightInInches: z
+      .string()
+      .refine(isNumber, isNumberError)
+      .refine(isGreaterThanZero, isGreaterThanZeroError)
+      .refine(isLessThanTwelve, isLessThanTwelveError)
+      .optional(),
+    weight: z
+      .string()
+      .refine(isNumber, isNumberError)
+      .refine(isGreaterThanZero, isGreaterThanZeroError),
+    activityLevel: z.array(z.number().min(0).max(4)).default([2]),
+  });
 
   export const getHeight = (data: CalculatorSchema) =>
     data.useMetric
-      ? Number(data.heightInCm)
-      : Number(data.heightInFeet) * 12 + Number(data.heightInInches ?? 0);
+      ? Number(data.height)
+      : Number(data.height) * 12 + Number(data.heightInInches ?? 0);
 
   export type CalculatorSchema = z.infer<typeof calculatorSchema>;
   export type OnSubmit = (form: CalculatorSchema) => void;
@@ -71,7 +55,7 @@
   import { superForm } from "sveltekit-superforms/client";
   import Slider from "./ui/slider/slider.svelte";
   import Switch from "./ui/switch/switch.svelte";
-  import Toggle from "./ui/toggle/toggle.svelte";
+  import * as ToggleGroup from "./ui/toggle-group";
 
   export let data: SuperValidated<CalculatorSchema>;
   export let onSubmit: OnSubmit;
@@ -80,6 +64,7 @@
     SPA: true,
     validators: zodClient(calculatorSchema),
     onUpdate({ form: updatedForm }) {
+      console.log("form", updatedForm);
       if (updatedForm.valid) {
         onSubmit(updatedForm.data);
       } else {
@@ -97,22 +82,31 @@
 </script>
 
 <form method="POST" use:enhance class="space-y-4">
-  <Form.Field {form} name="isFemale">
+  <Form.Field {form} name="sex">
     <Form.Control let:attrs>
-      <Form.Label>{c("isFemale").label}</Form.Label>
-      <div class="flex items-center space-x-2 w-[calc(100%-72px)]">
-        {#each c("isFemale").options as option}
-          <Toggle
-            {...attrs}
-            variant="outline"
-            class="flex-1"
-            pressed={$formData.isFemale === option.value}
-            onPressedChange={(pressed) =>
-              pressed ? toggleSex(option.value) : undefined}
-            >{option.label}</Toggle
-          >
-        {/each}
-      </div>
+      <Form.Label>{c("sex").label}</Form.Label>
+      <ToggleGroup.Root
+        {...attrs}
+        class="flex items-center space-x-2 w-[calc(100%-72px)]"
+        bind:value={$formData.sex}
+      >
+        <ToggleGroup.Item
+          value="female"
+          class="flex-1"
+          variant="outline"
+          data-fs-error={attrs["data-fs-error"]}
+          aria-invalid={attrs["aria-invalid"]}
+          >{c("sex").options.female.label}</ToggleGroup.Item
+        >
+        <ToggleGroup.Item
+          value="male"
+          class="flex-1"
+          variant="outline"
+          data-fs-error={attrs["data-fs-error"]}
+          aria-invalid={attrs["aria-invalid"]}
+          >{c("sex").options.male.label}</ToggleGroup.Item
+        >
+      </ToggleGroup.Root>
     </Form.Control>
   </Form.Field>
   <Form.Field {form} name="age">
@@ -129,12 +123,12 @@
     </Form.Control>
   </Form.Field>
   {#if $formData.useMetric}
-    <Form.Field {form} name="heightInCm">
+    <Form.Field {form} name="height">
       <Form.Control let:attrs>
         <div class="flex items-center space-x-2">
           <Input
             {...attrs}
-            bind:value={$formData.heightInCm}
+            bind:value={$formData.height}
             placeholder={c("height").placeholder}
             type="number"
           />
@@ -144,12 +138,12 @@
     </Form.Field>
   {:else}
     <div class="flex items-center space-x-2">
-      <Form.Field {form} name="heightInFeet" class="flex-shrink">
+      <Form.Field {form} name="height" class="flex-shrink">
         <Form.Control let:attrs>
           <div class="flex items-center space-x-2">
             <Input
               {...attrs}
-              bind:value={$formData.heightInFeet}
+              bind:value={$formData.height}
               placeholder={c("height").placeholder}
               type="number"
             />

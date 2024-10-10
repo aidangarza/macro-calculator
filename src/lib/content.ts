@@ -1,15 +1,12 @@
 const defaultContent = {
   title: "Macro Calculator",
   form: {
-    isFemale: {
+    sex: {
       label: "Your biological Sex",
-      options: [
-        {
-          label: "Female",
-          value: true,
-        },
-        { label: "Male", value: false },
-      ],
+      options: {
+        female: { label: "Female" },
+        male: { label: "Male" },
+      },
     },
     age: {
       placeholder: "Your age",
