@@ -29,63 +29,53 @@ const defaultContent = {
       },
     },
     activityLevel: {
-      label: "Your activity level: ",
+      label: "Your activity level",
       defaultIndex: 2,
       options: [
         {
-          label: "sedentary",
-          description: "little to no exercise",
+          label: "little to no exercise",
           value: 1.2,
         },
         {
-          label: "light",
-          description: "exercise 1-3 times per week",
+          label: "exercise 1-3 times per week",
           value: 1.375,
         },
         {
-          label: "moderate",
-          description: "exercise 4-5 times per week",
+          label: "exercise 4-5 times per week",
           value: 1.55,
         },
         {
-          label: "active",
-          description: "exercise daily or intensely 3-4 times per week",
+          label: "exercise daily or intensely 3-4 times per week",
           value: 1.725,
         },
         {
-          label: "very active",
-          description: "intense daily exercise",
+          label: "intense daily exercise",
           value: 1.9,
         },
       ],
     },
     goal: {
-      label: "Your goal:",
+      label: "Your goal",
       defaultIndex: 2,
       options: [
         {
-          label: "slim down",
-          description: "lose about 1lb per week",
+          label: "lose about 1lb per week",
           value: -500,
         },
         {
-          label: "slim down",
-          description: "lose about 0.5lb per week",
+          label: "lose about 0.5lb per week",
           value: -250,
         },
         {
-          label: "recomposition",
-          description: "maintain current weight",
+          label: "recomposition / maintain current weight",
           value: 0,
         },
         {
-          label: "bulk up",
-          description: "gain about 0.5lb per week",
+          label: "gain about 0.5lb per week",
           value: 250,
         },
         {
-          label: "bulk up",
-          description: "gain about 1lb per week",
+          label: "gain about 1lb per week",
           value: 500,
         },
       ],

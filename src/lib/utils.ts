@@ -142,12 +142,12 @@ export function c<K extends keyof (typeof content)["form"]>(
 }
 
 // Activity level option content
-export function al([n]: number[]) {
+export function al(n: number) {
   return c("activityLevel").options[n];
 }
 
 // Goal option content
-export function g([n]: number[]) {
+export function g(n: number) {
   return c("goal").options[n];
 }
 

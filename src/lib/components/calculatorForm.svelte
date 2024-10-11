@@ -36,11 +36,11 @@
       .refine(isNumber, isNumberError)
       .refine(isGreaterThanZero, isGreaterThanZeroError),
     activityLevel: z
-      .array(z.number().min(0).max(params.activityLevel.max))
-      .default([params.activityLevel.default]),
-    goal: z
-      .array(z.number().min(0).max(params.goal.max))
-      .default([params.goal.default]),
+      .number()
+      .min(0)
+      .max(params.activityLevel.max)
+      .default(params.activityLevel.default),
+    goal: z.number().min(0).max(params.goal.max).default(params.goal.default),
   });
 
   export const getHeight = (data: CalculatorSchema) =>
@@ -56,8 +56,8 @@
   import Button from "$lib/components/ui/button/button.svelte";
   import * as Form from "$lib/components/ui/form";
   import Input from "$lib/components/ui/input/input.svelte";
-  import Slider from "$lib/components/ui/slider/slider.svelte";
   import Switch from "$lib/components/ui/switch/switch.svelte";
+  import * as Select from "$lib/components/ui/select";
   import * as ToggleGroup from "$lib/components/ui/toggle-group";
   import { al, c, g, getOptionParameters } from "$lib/utils";
   import type { SuperValidated } from "sveltekit-superforms";
@@ -82,7 +82,14 @@
 
   const { form: formData, enhance } = form;
 
-  const params = getOptionParameters();
+  $: selectedActivityLevel = {
+    label: al($formData.activityLevel).label,
+    value: $formData.activityLevel,
+  };
+  $: selectedGoal = {
+    label: g($formData.goal).label,
+    value: $formData.goal,
+  };
 </script>
 
 <form method="POST" use:enhance class="space-y-4">
@@ -179,39 +186,42 @@
   </Form.Field>
   <Form.Field {form} name="activityLevel">
     <Form.Control let:attrs>
-      <Form.Label
-        >{c("activityLevel").label}
-        {al($formData.activityLevel).label}<br />
-        <span class="opacity-60 whitespace-nowrap"
-          >({al($formData.activityLevel).description})</span
-        ></Form.Label
+      <Select.Root
+        selected={selectedActivityLevel}
+        onSelectedChange={(s) => {
+          s && ($formData.activityLevel = s.value);
+        }}
       >
-      <Slider
-        {...attrs}
-        bind:value={$formData.activityLevel}
-        min={0}
-        max={params.activityLevel.max}
-        step={1}
-      />
+        <Select.Trigger {...attrs}>
+          <Select.Value placeholder={c("activityLevel").label} />
+        </Select.Trigger>
+        <Select.Content>
+          {#each c("activityLevel").options as { label }, value}
+            <Select.Item {value}>{label}</Select.Item>
+          {/each}
+        </Select.Content>
+      </Select.Root>
+      <input hidden bind:value={$formData.activityLevel} name={attrs.name} />
     </Form.Control>
   </Form.Field>
   <Form.Field {form} name="goal">
     <Form.Control let:attrs>
-      <Form.Label
-        >{c("goal").label}
-        {g($formData.goal).label}<br />
-        <span class="opacity-60 whitespace-nowrap"
-          >({g($formData.goal).description})</span
-        ></Form.Label
+      <Select.Root
+        selected={selectedGoal}
+        onSelectedChange={(s) => {
+          s && ($formData.goal = s.value);
+        }}
       >
-      <Slider
-        {...attrs}
-        bind:value={$formData.goal}
-        min={0}
-        max={params.goal.max}
-        step={1}
-        hideRange={true}
-      />
+        <Select.Trigger {...attrs}>
+          <Select.Value placeholder={c("goal").label} />
+        </Select.Trigger>
+        <Select.Content>
+          {#each c("goal").options as { label }, value}
+            <Select.Item {value}>{label}</Select.Item>
+          {/each}
+        </Select.Content>
+      </Select.Root>
+      <input hidden bind:value={$formData.goal} name={attrs.name} />
     </Form.Control>
   </Form.Field>
   <div class="flex justify-between items-center pt-3">
