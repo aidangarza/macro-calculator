@@ -37,19 +37,25 @@ const defaultContent = {
           value: 1.2,
         },
         {
-          label: "exercise 1-3 times per week",
+          label: "light exercise 1-3 times per week (low impact walking)",
           value: 1.375,
         },
         {
-          label: "exercise 4-5 times per week",
+          label:
+            "intense exercise 1-3 times per week (HIIT style, app workouts)",
           value: 1.55,
         },
         {
-          label: "exercise daily or intensely 3-4 times per week",
+          label: "light exercise 4-5 times per week (low impact walking)",
+          value: 1.55,
+        },
+        {
+          label:
+            "intense exercise 3-4 times per week (HIIT style, app workouts)",
           value: 1.725,
         },
         {
-          label: "intense daily exercise",
+          label: "intense exercise 5+ days per week (HIIT style, app workouts)",
           value: 1.9,
         },
       ],
@@ -93,21 +99,25 @@ const defaultContent = {
       label: "Calories",
       unit: "per day",
       order: 0,
+      percentage: 0.95,
     },
     protein: {
       label: "Protein",
       unit: "grams per day",
       order: 1,
+      percentage: 0.35,
     },
     carbs: {
       label: "Carbs",
       unit: "grams per day",
       order: 2,
+      percentage: 0.33,
     },
     fat: {
       label: "Fat",
       unit: "grams per day",
       order: 3,
+      percentage: 0.32,
     },
   },
 };
@@ -166,6 +176,22 @@ function getContent() {
 
   // Merge the default content with the input content
   const mergedContent = deepMerge(defaultContent, inputContent);
+
+  // Check the calorie split
+  const proteinSplit = mergedContent.results.protein.percentage;
+  const carbsSplit = mergedContent.results.carbs.percentage;
+  const fatSplit = mergedContent.results.fat.percentage;
+  const totalSplit = proteinSplit + carbsSplit + fatSplit;
+  if (totalSplit !== 1) {
+    console.error(
+      `The calorie split must add up to 1. The current sum is ${totalSplit}.`,
+      {
+        protein: proteinSplit,
+        carbs: carbsSplit,
+        fat: fatSplit,
+      }
+    );
+  }
 
   // Save the merged content to the window object for future reference
   window.__macroCalculatorContent = mergedContent;

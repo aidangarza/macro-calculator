@@ -9,6 +9,10 @@
   const isGreaterThanZeroError = {
     message: "Please enter a number greater than 0",
   };
+  const isPositive = (v: string) => Number(v) >= 0;
+  const isPositiveError = {
+    message: "Please enter a positive number",
+  };
   const isLessThanTwelve = (v: string) => Number(v) < 12;
   const isLessThanTwelveError = {
     message: "Please enter a number less than 12",
@@ -28,7 +32,7 @@
     heightInInches: z
       .string()
       .refine(isNumber, isNumberError)
-      .refine(isGreaterThanZero, isGreaterThanZeroError)
+      .refine(isPositive, isPositiveError)
       .refine(isLessThanTwelve, isLessThanTwelveError)
       .optional(),
     weight: z

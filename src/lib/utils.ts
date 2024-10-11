@@ -69,6 +69,12 @@ export type MSJArgs = {
   height: number;
   weight: number;
   activityLevel: number;
+  adjustmentFactor: number;
+  split: {
+    protein: number;
+    fat: number;
+    carbs: number;
+  };
   delta: number;
 };
 
@@ -86,13 +92,16 @@ export const mifflinStJeor = ({
   height,
   weight,
   activityLevel,
+  adjustmentFactor,
   delta,
 }: MSJArgs) => {
   let metricWeight = weight;
   let metricHeight = height;
 
   if (!isMetric) {
+    // Convert lbs to kg
     metricWeight = weight * 0.453592;
+    // Convert inches to cm
     metricHeight = height * 2.54;
   }
 
@@ -104,14 +113,18 @@ export const mifflinStJeor = ({
     bmr += 5;
   }
 
-  return bmr * activityLevel + delta;
+  const activeBmr = bmr * activityLevel;
+  const adjustedBmr = activeBmr * adjustmentFactor;
+
+  return adjustedBmr + delta;
 };
 
 export const calorieBreakdown = (args: MSJArgs): CalorieBreakdown => {
   const calories = mifflinStJeor(args);
-  const protein = Math.round((calories * 0.35) / 4); // 1g of protein is 4 calories
-  const carbs = Math.round((calories * 0.3) / 4); // 1g of carbs is 4 calories
-  const fat = Math.round((calories * 0.35) / 9); // 1g of fat is 9 calories
+  const { split } = args;
+  const protein = Math.round((calories * split.protein) / 4); // 1g of protein is 4 calories
+  const carbs = Math.round((calories * split.carbs) / 4); // 1g of carbs is 4 calories
+  const fat = Math.round((calories * split.fat) / 9); // 1g of fat is 9 calories
 
   return { calories: Math.round(calories), protein, fat, carbs };
 };
