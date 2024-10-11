@@ -118,6 +118,15 @@ declare global {
   }
 }
 
+function isPlainObject<T>(value: unknown): value is T {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    !Array.isArray(value) &&
+    !(value instanceof Function)
+  );
+}
+
 function deepMerge<T extends object>(target: T, source: Partial<T>): T {
   const result = { ...target };
 
@@ -127,12 +136,13 @@ function deepMerge<T extends object>(target: T, source: Partial<T>): T {
       const sourceValue = source[key];
 
       if (
-        targetValue &&
-        typeof targetValue === "object" &&
-        sourceValue &&
-        typeof sourceValue === "object"
+        isPlainObject<T>(targetValue) &&
+        isPlainObject<Partial<T>>(sourceValue)
       ) {
-        result[key] = deepMerge(targetValue, sourceValue);
+        result[key] = deepMerge(targetValue, sourceValue) as T[Extract<
+          keyof T,
+          string
+        >];
       } else if (sourceValue !== undefined) {
         result[key] = sourceValue;
       }
